@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Minimal PWA with Local Storage and Offline Caching</title>
+  <link rel="manifest" href="manifest.json">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Minimal PWA</h1>
+
+  <input type="file" id="fileInput">
+  <button id="readButton">Read File</button>
+
+  <script>
+    // Check if the browser supports the required APIs
+    if ('serviceWorker' in navigator && 'caches' in window && 'showOpenFilePicker' in window) {
+      navigator.serviceWorker.register('sw.js');
+
+      // Handle file reading
+      const fileInput = document.getElementById('fileInput');
+      const readButton = document.getElementById('readButton');
+
+      readButton.addEventListener('click', async () => {
+        try {
+          const [fileHandle] = await window.showOpenFilePicker();
+          const file = await fileHandle.getFile();
+          const reader = new FileReader();
+          reader.onload = () => {
+            console.log(reader.result);
+          };
+          reader.readAsText(file);
+        } catch (error) {
+          console.error('Error reading file:', error);
+        }
+      });
+    }
+
+    // Store data in local storage
+    localStorage.setItem('exampleKey', 'Example value');
+    const storedValue = localStorage.getItem('exampleKey');
+    console.log('Stored value:', storedValue);
+  </script>
+</body>
+</html>
